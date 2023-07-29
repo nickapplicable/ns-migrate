@@ -1,0 +1,26 @@
+{
+	"name": "ns-migrate",
+	"version": "0.0.1",
+	"license": "MIT",
+	"description": "",
+	"main": "dist/index.js",
+	"module": "dist/index.mjs",
+	"types": "dist/index.d.ts",
+	"scripts": {
+		"build": "tsup src/index.ts --format cjs,esm --dts",
+		"lint": "tsc"
+	},
+	"author": "nick@applicable.co.nz",
+	"dependencies": {
+		"pg": "^8.11.1",
+		"sql-formatter": "^12.2.4",
+		"zod": "^3.21.4"
+	},
+	"devDependencies": {
+		"@changesets/cli": "^2.26.2",
+		"@types/node": "^20.4.5",
+		"@types/pg": "^8.10.2",
+		"tsup": "^7.1.0",
+		"typescript": "^5.1.6"
+	}
+}
