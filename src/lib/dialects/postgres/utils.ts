@@ -11,7 +11,7 @@ export const mapAttributeTypeToPgType = (type: AttributeType) => {
 		case 'int':
 			return 'int8'
 		case 'float':
-			return 'float'
+			return 'float8'
 		case 'boolean':
 			return 'boolean'
 		case 'date':
@@ -34,7 +34,7 @@ export const mapPgTypeToAttributeType = (type: string): AttributeType => {
 			return AttributeType.uuid
 		case 'int8':
 			return AttributeType.int
-		case 'float':
+		case 'float8':
 			return AttributeType.float
 		case 'boolean':
 			return AttributeType.boolean
