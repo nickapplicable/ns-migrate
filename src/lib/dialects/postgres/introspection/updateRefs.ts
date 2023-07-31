@@ -1,8 +1,8 @@
-import { Client } from 'pg'
+import { Client, Pool } from 'pg'
 import { RelationType, Schema } from '../../../types'
 import { createRefTable } from './createRefTable'
 
-export const updateRefs = async (db: Client, schema: Schema) => {
+export const updateRefs = async (db: Client | Pool, schema: Schema) => {
 	await createRefTable(db)
 
 	for (const model of schema.models) {

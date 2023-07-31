@@ -1,6 +1,8 @@
-import { Client } from 'pg'
+import { Client, Pool } from 'pg'
 import { Schema } from './lib/types'
 import { getDialect } from './lib/dialects'
+
+const pool = new Pool({})
 
 type Credentials = {
 	host: string
@@ -14,9 +16,13 @@ type DBURL = string
 
 export const getSchema = async (
 	dialect: 'postgres',
-	credentials: Credentials
+	credentials: Credentials | Client | Pool
 ) => {
-	const client = new Client(credentials)
+	const client =
+		credentials instanceof Client || credentials instanceof Pool
+			? credentials
+			: new Client(credentials)
+
 	await client.connect()
 
 	const d = getDialect(dialect)

@@ -1,6 +1,6 @@
-import { Client } from 'pg'
+import { Client, Pool } from 'pg'
 
-export const createRefTable = async (db: Client) => {
+export const createRefTable = async (db: Client | Pool) => {
 	await db.query(`CREATE SCHEMA IF NOT EXISTS dynamo`)
 	await db.query(`
 		CREATE TABLE IF NOT EXISTS dynamo.ref (

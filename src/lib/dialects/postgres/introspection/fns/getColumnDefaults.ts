@@ -1,4 +1,4 @@
-import { Client } from 'pg'
+import { Client, Pool } from 'pg'
 import { z } from 'zod'
 
 const validate = z.array(
@@ -9,7 +9,7 @@ const validate = z.array(
 	})
 )
 
-export const getColumnDefaults = async (db: Client) => {
+export const getColumnDefaults = async (db: Client | Pool) => {
 	const { rows } = await db.query(`
 		SELECT c.relname AS table, a.attname AS column, pg_get_expr(d.adbin, d.adrelid) AS value
 		FROM pg_class c, pg_namespace n, pg_attrdef d, pg_attribute a
