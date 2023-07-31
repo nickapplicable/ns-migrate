@@ -12,6 +12,17 @@ type Credentials = {
 
 type DBURL = string
 
+export const getSchema = async (
+	dialect: 'postgres',
+	credentials: Credentials
+) => {
+	const client = new Client(credentials)
+	await client.connect()
+
+	const d = getDialect(dialect)
+	return await d.getSchema(client)
+}
+
 export const migrate = async (
 	credentials: Credentials | DBURL,
 	schema: Schema,
