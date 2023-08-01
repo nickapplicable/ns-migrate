@@ -11,7 +11,12 @@
 		"release": "pnpm run build && changeset publish",
 		"lint": "tsc"
 	},
-	"author": "nick@applicable.co.nz",
+	"author": "Nick Sheffield",
+	"homepage": "https://github.com/nickapplicable/ns-migrate",
+	"repository": {
+		"type": "git",
+		"url": "git://github.com/nickapplicable/ns-migrate.git"
+	},
 	"dependencies": {
 		"pg": "^8.11.1",
 		"sql-formatter": "^12.2.4",
