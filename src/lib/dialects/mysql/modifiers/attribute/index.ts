@@ -30,5 +30,5 @@ export const getAttributeQueries = (actions: DiffAction[]): string[] => {
 			}
 		})
 		.filter((x: any): x is string => x !== undefined)
-		.map((x) => format(x, { language: 'postgresql', keywordCase: 'upper' }))
+		.map((x) => format(x, { language: 'mysql', keywordCase: 'upper' }))
 }

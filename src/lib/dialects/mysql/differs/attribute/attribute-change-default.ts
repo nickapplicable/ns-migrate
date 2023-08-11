@@ -31,6 +31,12 @@ export const diffAttributeChangeDefault = (
 			// if the attr is gone, it can't be renamed
 			if (!newAttribute) continue
 
+			if (
+				originalAttribute.default === 'NULL' &&
+				newAttribute.default === null
+			)
+				continue
+
 			if (originalAttribute.default !== newAttribute.default) {
 				diffs.push({
 					type: 'attribute-change-default',
