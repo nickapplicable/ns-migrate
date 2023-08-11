@@ -1,19 +1,18 @@
-import { Client, Pool } from 'pg'
-import { RelationType, Schema } from '../../../types'
+import { QueryFn, RelationType, Schema } from '../../../types'
 import { createRefTable } from './createRefTable'
 
-export const updateRefs = async (db: Client | Pool, schema: Schema) => {
-	await createRefTable(db)
+export const updateRefs = async (query: QueryFn, schema: Schema) => {
+	await createRefTable(query)
 
 	for (const model of schema.models) {
-		await db.query(`
+		await query(`
 			INSERT INTO dynamo.ref (id, type, name)
 			VALUES('${model.id}', 'm', '${model.tableName}')
 			ON CONFLICT (id) DO UPDATE SET name = '${model.tableName}'
 		`)
 
 		for (const attr of model.attributes) {
-			await db.query(`
+			await query(`
 				insert into dynamo.ref (id, type, name, tableName)
 				VALUES('${attr.id}', 'a', '${attr.name}', '${model.tableName}')
 				ON CONFLICT (id) DO UPDATE SET name = '${attr.name}'
@@ -27,7 +26,7 @@ export const updateRefs = async (db: Client | Pool, schema: Schema) => {
 		)
 
 		for (const relation of sourceRelations) {
-			await db.query(`
+			await query(`
 				insert into dynamo.ref (id, type, name, tableName)
 				VALUES('${relation.id}', 'r', '${relation.targetName}Id', '${model.tableName}')
 				ON CONFLICT (id) DO UPDATE SET name = '${relation.targetName}Id'
@@ -42,7 +41,7 @@ export const updateRefs = async (db: Client | Pool, schema: Schema) => {
 		)
 
 		for (const relation of targetRelations) {
-			await db.query(`
+			await query(`
 				insert into dynamo.ref (id, type, name, tableName)
 				VALUES('${relation.id}', 'r', '${relation.sourceName}Id', '${model.tableName}')
 				ON CONFLICT (id) DO UPDATE SET name = '${relation.sourceName}Id'

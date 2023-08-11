@@ -1,3 +1,5 @@
+export type QueryFn = (sql: string) => Promise<any>
+
 export enum AttributeType {
 	'uuid' = 'uuid',
 	'a_i' = 'a_i',

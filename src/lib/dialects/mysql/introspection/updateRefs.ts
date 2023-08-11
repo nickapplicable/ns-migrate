@@ -1,12 +1,11 @@
-import { Connection } from 'mysql2/promise'
-import { RelationType, Schema } from '../../../types'
+import { QueryFn, RelationType, Schema } from '../../../types'
 import { createRefTable } from './createRefTable'
 
-export const updateRefs = async (db: Connection, schema: Schema) => {
-	await createRefTable(db)
+export const updateRefs = async (query: QueryFn, schema: Schema) => {
+	await createRefTable(query)
 
 	for (const model of schema.models) {
-		await db.query(`
+		await query(`
 			INSERT INTO _ref (id, type, name)
 			VALUES('${model.id}', 'm', '${model.tableName}')
 			ON DUPLICATE KEY UPDATE
@@ -16,7 +15,7 @@ export const updateRefs = async (db: Connection, schema: Schema) => {
 		`)
 
 		for (const attr of model.attributes) {
-			await db.query(`
+			await query(`
 				insert into _ref (id, type, name, tableName)
 				VALUES('${attr.id}', 'a', '${attr.name}', '${model.tableName}')
 				ON DUPLICATE KEY UPDATE
@@ -34,7 +33,7 @@ export const updateRefs = async (db: Connection, schema: Schema) => {
 		)
 
 		for (const relation of sourceRelations) {
-			await db.query(`
+			await query(`
 				insert into dynamo.ref (id, type, name, tableName)
 				VALUES('${relation.id}', 'r', '${relation.targetName}Id', '${model.tableName}')
 				ON DUPLICATE KEY UPDATE
@@ -53,7 +52,7 @@ export const updateRefs = async (db: Connection, schema: Schema) => {
 		)
 
 		for (const relation of targetRelations) {
-			await db.query(`
+			await query(`
 				insert into dynamo.ref (id, type, name, tableName)
 				VALUES('${relation.id}', 'r', '${relation.sourceName}Id', '${model.tableName}')
 				ON DUPLICATE KEY UPDATE

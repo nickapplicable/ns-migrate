@@ -1,5 +1,5 @@
-import { Client, Pool } from 'pg'
 import { z } from 'zod'
+import { QueryFn } from '../../../../types'
 
 const validate = z.array(
 	z.object({
@@ -10,8 +10,8 @@ const validate = z.array(
 	})
 )
 
-export const getColumns = async (db: Client | Pool) => {
-	const { rows } = await db.query(`
+export const getColumns = async (query: QueryFn) => {
+	const rows = await query(`
 		SELECT a.attname AS name, c.relname as tableName, t.typname as type, a.attnotnull as notnull
 		FROM pg_attribute a
 		INNER JOIN pg_class c ON a.attrelid = c.oid

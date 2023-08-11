@@ -1,6 +1,6 @@
 import { Client, Pool } from 'pg'
 import { createConnection, Connection } from 'mysql2/promise'
-import { Schema } from './lib/types'
+import { QueryFn, Schema } from './lib/types'
 import { Dialect, getDialect } from './lib/dialects'
 
 type Credentials = {
@@ -29,9 +29,9 @@ export const getSchema = async (
 	dialect: Dialect,
 	credentials: Credentials | Client | Pool | Connection
 ) => {
-	let client
-
 	if (dialect === 'postgres') {
+		let client = credentials
+
 		if (isCredentials(credentials)) {
 			client = new Client(credentials)
 			await client.connect()
@@ -44,10 +44,17 @@ export const getSchema = async (
 
 		if (!client) return
 
-		return await getDialect('postgres').getSchema(client)
+		const query = async (sql: string) => {
+			const { rows } = await (client as Client | Pool).query(sql)
+			return rows
+		}
+
+		return await getDialect('postgres').getSchema(query)
 	}
 
 	if (dialect === 'mysql') {
+		let client = credentials
+
 		if (isCredentials(credentials)) {
 			client = await createConnection(credentials)
 		} else {
@@ -56,26 +63,58 @@ export const getSchema = async (
 
 		if (!client) return
 
-		return await getDialect('mysql').getSchema(client as Connection)
+		const query = async (sql: string) => {
+			const [rows] = await (client as Connection).query(sql)
+			return rows
+		}
+
+		return await getDialect('mysql').getSchema(query)
 	}
 }
 
 export const migrate = async (
+	dialect: Dialect,
 	credentials: Credentials | DBURL,
 	schema: Schema,
 	force = false
 ) => {
-	// connect to the database
-	const client = new Client(credentials)
-	await client.connect()
+	let client: Client | Pool | Connection | null = null
+	let query: QueryFn | null = null
 
-	const d = getDialect('postgres')
+	if (dialect === 'postgres') {
+		client = new Client(credentials)
+		await client.connect()
+
+		query = async (sql: string) => {
+			const { rows } = await (client as Client | Pool).query(sql)
+			return rows
+		}
+	}
+
+	if (dialect === 'mysql') {
+		client = await createConnection(
+			isCredentials(credentials)
+				? credentials
+				: { uri: credentials as DBURL }
+		)
+
+		query = async (sql: string) => {
+			const [rows] = await (client as Connection).query(sql)
+			return rows
+		}
+	}
+
+	if (!query) return
+
+	// connect to the database
+
+	const d = getDialect(dialect)
 
 	// create the ref table if it doesn't already exist
-	await d.createRefTable(client)
+	await d.createRefTable(query)
 
 	// introspect the database and create a schema object
-	const dbSchema = await d.getSchema(client)
+	const dbSchema = await d.getSchema(query)
 
 	// console.dir(dbSchema, { depth: 4, colors: true })
 
@@ -83,13 +122,17 @@ export const migrate = async (
 	const queries = d.getQueries(dbSchema, schema, force)
 
 	// console log each of the sync queries
-	for (const query of queries) {
-		console.log(query)
+	for (const sql of queries) {
+		console.log(sql)
 		console.log(' ')
-		await client.query(query)
+		await query(sql)
 	}
 
-	await d.updateRefs(client, schema)
+	await d.updateRefs(query, schema)
 
-	await client.end()
+	if (dialect === 'postgres') {
+		await (client as Client | Pool).end()
+	} else {
+		await (client as Connection).end()
+	}
 }

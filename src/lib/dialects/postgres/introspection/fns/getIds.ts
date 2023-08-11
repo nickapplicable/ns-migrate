@@ -1,5 +1,5 @@
-import { Client, Pool } from 'pg'
 import { z } from 'zod'
+import { QueryFn } from '../../../../types'
 
 const validate = z.array(
 	z.object({
@@ -10,7 +10,7 @@ const validate = z.array(
 	})
 )
 
-export const getIds = async (db: Client | Pool) => {
-	const { rows } = await db.query(`SELECT * FROM dynamo.ref`)
+export const getIds = async (query: QueryFn) => {
+	const { rows } = await query(`SELECT * FROM dynamo.ref`)
 	return validate.parse(rows)
 }

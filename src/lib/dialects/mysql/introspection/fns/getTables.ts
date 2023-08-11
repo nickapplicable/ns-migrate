@@ -1,5 +1,5 @@
-import { Connection } from 'mysql2/promise'
 import { z } from 'zod'
+import { QueryFn } from '../../../../types'
 
 const validate = z.array(
 	z.object({
@@ -7,8 +7,8 @@ const validate = z.array(
 	})
 )
 
-export const getTables = async (db: Connection) => {
-	const [rows] = await db.query(`
+export const getTables = async (query: QueryFn) => {
+	const rows = await query(`
 		SELECT TABLE_NAME as name
 		FROM information_schema.TABLES as t
 		WHERE t.TABLE_SCHEMA = 'db'

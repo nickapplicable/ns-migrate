@@ -1,16 +1,15 @@
-import { Client, Pool } from 'pg'
 import { getIds } from './fns/getIds'
 import { getTables } from './fns/getTables'
 import { getColumns } from './fns/getColumns'
 import { mapPgTypeToAttributeType } from '../utils'
 import { getColumnDefaults } from './fns/getColumnDefaults'
-import { Schema } from '../../../types'
+import { QueryFn, Schema } from '../../../types'
 
-export const getSchema = async (db: Client | Pool): Promise<Schema> => {
-	const _dynamo = await getIds(db)
-	const tables = await getTables(db)
-	const columns = await getColumns(db)
-	const defaults = await getColumnDefaults(db)
+export const getSchema = async (query: QueryFn): Promise<Schema> => {
+	const _dynamo = await getIds(query)
+	const tables = await getTables(query)
+	const columns = await getColumns(query)
+	const defaults = await getColumnDefaults(query)
 
 	const schema = {
 		models: tables

@@ -1,5 +1,5 @@
-import { Connection } from 'mysql2/promise'
 import { z } from 'zod'
+import { QueryFn } from '../../../../types'
 
 const validate = z.array(
 	z.object({
@@ -10,7 +10,7 @@ const validate = z.array(
 	})
 )
 
-export const getIds = async (db: Connection) => {
-	const [rows] = await db.query(`SELECT * FROM _ref`)
+export const getIds = async (query: QueryFn) => {
+	const rows = await query(`SELECT * FROM _ref`)
 	return validate.parse(rows)
 }
