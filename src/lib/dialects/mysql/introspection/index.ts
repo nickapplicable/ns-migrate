@@ -43,7 +43,7 @@ export const getSchema = async (query: QueryFn): Promise<Schema> => {
 							(_d) =>
 								(_d.type === 'a' || _d.type === 'r') &&
 								_d.name === column.name &&
-								_d.tablename === table.name
+								_d.tableName === table.name
 						)
 
 						const attr = {

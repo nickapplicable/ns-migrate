@@ -6,7 +6,7 @@ const validate = z.array(
 		id: z.string(),
 		type: z.enum(['m', 'a', 'r']), // m = model, a = attribute, r = relation
 		name: z.string(),
-		tablename: z.string().nullable(),
+		tableName: z.string().nullable(),
 	})
 )
 
