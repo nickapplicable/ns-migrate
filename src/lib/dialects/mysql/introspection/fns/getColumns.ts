@@ -4,7 +4,7 @@ import { QueryFn } from '../../../../types'
 const validate = z.array(
 	z.object({
 		name: z.string(),
-		table: z.string(),
+		tableName: z.string(),
 		type: z.string(),
 		notnull: z.boolean(),
 	})

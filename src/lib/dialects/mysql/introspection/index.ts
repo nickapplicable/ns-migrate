@@ -22,7 +22,7 @@ export const getSchema = async (query: QueryFn): Promise<Schema> => {
 
 				const hasAuditDates =
 					columns
-						.filter((x) => x.table === table.name)
+						.filter((x) => x.tableName === table.name)
 						.filter(
 							(x) =>
 								x.name === 'createdAt' ||
@@ -31,7 +31,7 @@ export const getSchema = async (query: QueryFn): Promise<Schema> => {
 						).length === 3
 
 				const attributes = columns
-					.filter((x) => x.table === table.name)
+					.filter((x) => x.tableName === table.name)
 					.filter(
 						(x) =>
 							x.name !== 'createdAt' &&
