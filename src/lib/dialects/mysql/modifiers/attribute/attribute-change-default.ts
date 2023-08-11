@@ -7,5 +7,5 @@ export const attributeChangeDefaultQuery = (
 
 	const def = to === null || to?.toLowerCase() === 'null' ? 'NULL' : `${to}`
 
-	return `ALTER TABLE "${tableName}" ALTER COLUMN "${attributeName}" SET DEFAULT ${def};`
+	return `ALTER TABLE \`${tableName}\` ALTER COLUMN \`${attributeName}\` SET DEFAULT ${def};`
 }

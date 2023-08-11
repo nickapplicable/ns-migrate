@@ -5,9 +5,9 @@ export const attributeAddQuery = (action: AttributeAddAction) => {
 	const { attribute, tableName } = action.data
 
 	return `
-		ALTER TABLE "${tableName}" ADD COLUMN "${
+		ALTER TABLE \`${tableName}\` ADD COLUMN \`${
 		attribute.name
-	}" ${mapAttributeTypeToMySQLType(attribute.type)} ${
+	}\` ${mapAttributeTypeToMySQLType(attribute.type)} ${
 		attribute.nullable ? 'NULL' : 'NOT NULL'
 	} ${attribute.default ? `DEFAULT ${attribute.default}` : ''};
 	`
