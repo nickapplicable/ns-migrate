@@ -4,14 +4,14 @@ import { QueryFn } from '../../../../types'
 const validate = z.array(
 	z.object({
 		tableName: z.string(),
-		column: z.string(),
-		value: z.string().nullable(),
+		columnName: z.string(),
+		defaultValue: z.string().nullable(),
 	})
 )
 
 export const getColumnDefaults = async (query: QueryFn) => {
 	const rows = await query(`
-		SELECT TABLE_NAME as tableName, COLUMN_NAME as column, COLUMN_DEFAULT as value
+		SELECT TABLE_NAME as tableName, COLUMN_NAME as columnName, COLUMN_DEFAULT as defaultValue
 		FROM information_schema.COLUMNS
 		WHERE TABLE_SCHEMA = 'db'
 	`)

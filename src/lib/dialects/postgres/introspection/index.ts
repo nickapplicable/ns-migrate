@@ -53,8 +53,8 @@ export const getSchema = async (query: QueryFn): Promise<Schema> => {
 								defaults.find(
 									(x) =>
 										x.tableName === table.name &&
-										x.column === column.name
-								)?.value || null,
+										x.columnName === column.name
+								)?.defaultValue || null,
 							nullable: !column.notnull,
 							modelId: _d_table?.id,
 						}
