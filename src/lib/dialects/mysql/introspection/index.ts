@@ -1,12 +1,12 @@
-import { Client, Pool } from 'pg'
+import { Connection } from 'mysql2/promise'
 import { getIds } from './fns/getIds'
 import { getTables } from './fns/getTables'
 import { getColumns } from './fns/getColumns'
-import { mapPgTypeToAttributeType } from '../utils'
+import { mapMySQLTypeToAttributeType } from '../utils'
 import { getColumnDefaults } from './fns/getColumnDefaults'
 import { Schema } from '../../../types'
 
-export const getSchema = async (db: Client | Pool): Promise<Schema> => {
+export const getSchema = async (db: Connection): Promise<Schema> => {
 	const _dynamo = await getIds(db)
 	const tables = await getTables(db)
 	const columns = await getColumns(db)
@@ -22,7 +22,7 @@ export const getSchema = async (db: Client | Pool): Promise<Schema> => {
 
 				const hasAuditDates =
 					columns
-						.filter((x) => x.tableName === table.name)
+						.filter((x) => x.table === table.name)
 						.filter(
 							(x) =>
 								x.name === 'createdAt' ||
@@ -31,7 +31,7 @@ export const getSchema = async (db: Client | Pool): Promise<Schema> => {
 						).length === 3
 
 				const attributes = columns
-					.filter((x) => x.tableName === table.name)
+					.filter((x) => x.table === table.name)
 					.filter(
 						(x) =>
 							x.name !== 'createdAt' &&
@@ -49,7 +49,7 @@ export const getSchema = async (db: Client | Pool): Promise<Schema> => {
 						const attr = {
 							id: _d_attr?.id || null,
 							name: column.name,
-							type: mapPgTypeToAttributeType(column.type),
+							type: mapMySQLTypeToAttributeType(column.type),
 							default:
 								defaults.find(
 									(x) =>

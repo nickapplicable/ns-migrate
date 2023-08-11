@@ -3,7 +3,7 @@ import { z } from 'zod'
 
 const validate = z.array(
 	z.object({
-		table: z.string(),
+		tableName: z.string(),
 		column: z.string(),
 		value: z.string().nullable(),
 	})
@@ -11,7 +11,7 @@ const validate = z.array(
 
 export const getColumnDefaults = async (db: Client | Pool) => {
 	const { rows } = await db.query(`
-		SELECT c.relname AS table, a.attname AS column, pg_get_expr(d.adbin, d.adrelid) AS value
+		SELECT c.relname AS tableName, a.attname AS column, pg_get_expr(d.adbin, d.adrelid) AS value
 		FROM pg_class c, pg_namespace n, pg_attrdef d, pg_attribute a
 		WHERE c.relkind='r'
 		AND c.relnamespace=n.oid
