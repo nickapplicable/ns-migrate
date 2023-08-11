@@ -11,7 +11,7 @@ export const modelAddQuery = (action: ModelAddAction) => {
 				.map((attribute) => {
 					let def = attribute.default
 
-					return `"${attribute.name}" ${mapAttributeTypeToMySQLType(
+					return `${attribute.name} ${mapAttributeTypeToMySQLType(
 						attribute.type
 					)} ${attribute.nullable ? 'NULL' : 'NOT NULL'} ${
 						def ? `DEFAULT ${def}` : ''
