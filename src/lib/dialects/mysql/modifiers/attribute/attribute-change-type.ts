@@ -3,5 +3,5 @@ import { AttributeChangeTypeAction } from '../../differs/attribute/attribute-cha
 export const attributeChangeTypeQuery = (action: AttributeChangeTypeAction) => {
 	const { tableName, attributeName, to } = action.data
 
-	return `ALTER TABLE ${tableName} ALTER COLUMN ${attributeName} TYPE ${to};`
+	return `ALTER TABLE \`${tableName}\` ALTER COLUMN \`${attributeName}\` TYPE ${to};`
 }

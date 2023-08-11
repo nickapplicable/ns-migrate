@@ -7,5 +7,5 @@ export const attributeChangeNullableQuery = (
 
 	const change = to ? 'DROP' : 'SET'
 
-	return `ALTER TABLE ${tableName} ALTER COLUMN ${attributeName} ${change} NOT NULL;`
+	return `ALTER TABLE \`${tableName}\` ALTER COLUMN \`${attributeName}\` ${change} NOT NULL;`
 }
