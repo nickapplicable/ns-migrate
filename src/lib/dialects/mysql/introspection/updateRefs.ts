@@ -6,23 +6,27 @@ export const updateRefs = async (query: QueryFn, schema: Schema) => {
 
 	for (const model of schema.models) {
 		await query(`
-			INSERT INTO _ref (id, type, name)
-			VALUES('${model.id}', 'm', '${model.tableName}')
+			INSERT INTO _ref (id, type, name, posX, posY)
+			VALUES('${model.id}', 'm', '${model.tableName}', ${model.posX}, ${model.posY})
 			ON DUPLICATE KEY UPDATE
 				id = '${model.id}',
 				type = 'm',
-				name = '${model.tableName}'
+				name = '${model.tableName}',
+				posX = ${model.posX},
+				posY = ${model.posY}
 		`)
 
 		for (const attr of model.attributes) {
 			await query(`
-				insert into _ref (id, type, name, tableName)
-				VALUES('${attr.id}', 'a', '${attr.name}', '${model.tableName}')
+				insert into _ref (id, type, name, tableName, posX, posY)
+				VALUES('${attr.id}', 'a', '${attr.name}', '${model.tableName}', ${model.posX}, ${model.posY})
 				ON DUPLICATE KEY UPDATE
 					id = '${attr.id}',
 					type = 'a',
 					name = '${attr.name}',
-					tableName = '${model.tableName}'
+					tableName = '${model.tableName}',
+					posX = ${model.posX},
+					posY = ${model.posY}
 			`)
 		}
 
@@ -34,13 +38,15 @@ export const updateRefs = async (query: QueryFn, schema: Schema) => {
 
 		for (const relation of sourceRelations) {
 			await query(`
-				insert into _ref (id, type, name, tableName)
-				VALUES('${relation.id}', 'r', '${relation.targetName}Id', '${model.tableName}')
+				insert into _ref (id, type, name, tableName, posX, posY)
+				VALUES('${relation.id}', 'r', '${relation.targetName}Id', '${model.tableName}', ${model.posX}, ${model.posY})
 				ON DUPLICATE KEY UPDATE
 					id = '${relation.id}',
 					type = 'r',
 					name = '${relation.targetName}Id',
-					tableName = '${model.tableName}'
+					tableName = '${model.tableName}',
+					posX = ${model.posX},
+					posY = ${model.posY}
 			`)
 		}
 
@@ -53,13 +59,15 @@ export const updateRefs = async (query: QueryFn, schema: Schema) => {
 
 		for (const relation of targetRelations) {
 			await query(`
-				insert into _ref (id, type, name, tableName)
-				VALUES('${relation.id}', 'r', '${relation.sourceName}Id', '${model.tableName}')
+				insert into _ref (id, type, name, tableName, posX, posY)
+				VALUES('${relation.id}', 'r', '${relation.sourceName}Id', '${model.tableName}', ${model.posX}, ${model.posY})
 				ON DUPLICATE KEY UPDATE
 					id = '${relation.id}',
 					type = 'r',
 					name = '${relation.sourceName}Id',
-					tableName = '${model.tableName}'
+					tableName = '${model.tableName}',
+					posX = ${model.posX},
+					posY = ${model.posY}
 			`)
 		}
 	}

@@ -48,6 +48,8 @@ export type Model = {
 	name?: string | null
 	tableName: string
 	auditDates: boolean
+	posX: number
+	posY: number
 	attributes: Attribute[]
 }
 

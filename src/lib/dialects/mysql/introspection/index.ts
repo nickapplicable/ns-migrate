@@ -1,5 +1,4 @@
-import { Connection } from 'mysql2/promise'
-import { getIds } from './fns/getIds'
+import { getRefs } from './fns/getRefs'
 import { getTables } from './fns/getTables'
 import { getColumns } from './fns/getColumns'
 import { mapMySQLTypeToAttributeType } from '../utils'
@@ -7,7 +6,7 @@ import { getColumnDefaults } from './fns/getColumnDefaults'
 import { QueryFn, Schema } from '../../../types'
 
 export const getSchema = async (query: QueryFn): Promise<Schema> => {
-	const _dynamo = await getIds(query)
+	const _refs = await getRefs(query)
 	const tables = await getTables(query)
 	const columns = await getColumns(query)
 	const defaults = await getColumnDefaults(query)
@@ -16,8 +15,8 @@ export const getSchema = async (query: QueryFn): Promise<Schema> => {
 		models: tables
 			.filter((x) => x.name[0] !== '_')
 			.map((table) => {
-				const _d_table = _dynamo.find(
-					(_d) => _d.type === 'm' && _d.name === table.name
+				const _ref_table = _refs.find(
+					(_ref) => _ref.type === 'm' && _ref.name === table.name
 				)
 
 				const hasAuditDates =
@@ -39,15 +38,15 @@ export const getSchema = async (query: QueryFn): Promise<Schema> => {
 							x.name !== 'deletedAt'
 					)
 					.map((column) => {
-						const _d_attr = _dynamo.find(
-							(_d) =>
-								(_d.type === 'a' || _d.type === 'r') &&
-								_d.name === column.name &&
-								_d.tableName === table.name
+						const _ref_attr = _refs.find(
+							(_ref) =>
+								(_ref.type === 'a' || _ref.type === 'r') &&
+								_ref.name === column.name &&
+								_ref.tableName === table.name
 						)
 
 						const attr = {
-							id: _d_attr?.id || null,
+							id: _ref_attr?.id || null,
 							name: column.name,
 							type: mapMySQLTypeToAttributeType(column.type),
 							default:
@@ -57,16 +56,18 @@ export const getSchema = async (query: QueryFn): Promise<Schema> => {
 										x.columnName === column.name
 								)?.defaultValue || null,
 							nullable: !column.notnull,
-							modelId: _d_table?.id,
+							modelId: _ref_table?.id,
 						}
 
 						return attr
 					})
 
 				return {
-					id: _d_table?.id || null,
+					id: _ref_table?.id || null,
 					tableName: table.name,
 					auditDates: hasAuditDates,
+					posX: _ref_table?.posX || 0,
+					posY: _ref_table?.posY || 0,
 					attributes: [...attributes],
 				}
 			}),

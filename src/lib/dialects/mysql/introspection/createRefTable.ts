@@ -6,7 +6,9 @@ export const createRefTable = async (query: QueryFn) => {
 			id varchar(36) not null primary key,
 			type text not null,
 			name text not null,
-			tableName text null
+			tableName text null,
+			posX float null,
+			posY float null
 		);
 	`)
 }
