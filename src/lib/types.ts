@@ -24,10 +24,10 @@ export type Relation = {
 	id: string
 	optional: boolean
 	type: RelationType
-	sourceId: string
+	sourceId: string | null
 	sourceName?: string | null
 	sourceOrder: number
-	targetId: string
+	targetId: string | null
 	targetName?: string | null
 	targetOrder: number
 }

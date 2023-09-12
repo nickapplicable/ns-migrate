@@ -15,8 +15,7 @@ const isCredentials = (credentials: any): credentials is Credentials => {
 	return (
 		typeof credentials === 'object' &&
 		typeof credentials.host === 'string' &&
-		(typeof credentials.port === 'number' ||
-			typeof credentials.port === 'undefined') &&
+		(typeof credentials.port === 'number' || typeof credentials.port === 'undefined') &&
 		typeof credentials.database === 'string' &&
 		typeof credentials.user === 'string' &&
 		typeof credentials.password === 'string'
@@ -25,20 +24,14 @@ const isCredentials = (credentials: any): credentials is Credentials => {
 
 type DBURL = string
 
-export const getSchema = async (
-	dialect: Dialect,
-	credentials: Credentials | Client | Pool | Connection
-) => {
+export const getSchema = async (dialect: Dialect, credentials: Credentials | Client | Pool | Connection) => {
 	if (dialect === 'postgres') {
 		let client = credentials
 
 		if (isCredentials(credentials)) {
 			client = new Client(credentials)
 			await client.connect()
-		} else if (
-			credentials instanceof Client ||
-			credentials instanceof Pool
-		) {
+		} else if (credentials instanceof Client || credentials instanceof Pool) {
 			client = credentials
 		}
 
@@ -72,12 +65,7 @@ export const getSchema = async (
 	}
 }
 
-export const migrate = async (
-	dialect: Dialect,
-	credentials: Credentials | DBURL,
-	schema: Schema,
-	force = false
-) => {
+export const migrate = async (dialect: Dialect, credentials: Credentials | DBURL, schema: Schema, force = false) => {
 	let client: Client | Pool | Connection | null = null
 	let query: QueryFn | null = null
 
@@ -92,11 +80,7 @@ export const migrate = async (
 	}
 
 	if (dialect === 'mysql') {
-		client = await createConnection(
-			isCredentials(credentials)
-				? credentials
-				: { uri: credentials as DBURL }
-		)
+		client = await createConnection(isCredentials(credentials) ? credentials : { uri: credentials as DBURL })
 
 		query = async (sql: string) => {
 			const [rows] = await (client as Connection).query(sql)
@@ -115,6 +99,8 @@ export const migrate = async (
 
 	// introspect the database and create a schema object
 	const dbSchema = await d.getSchema(query)
+
+	console.log('dbSchema', dbSchema)
 
 	// console.dir(dbSchema, { depth: 4, colors: true })
 

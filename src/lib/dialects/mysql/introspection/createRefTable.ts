@@ -8,7 +8,8 @@ export const createRefTable = async (query: QueryFn) => {
 			name text not null,
 			tableName text null,
 			posX float null,
-			posY float null
+			posY float null,
+			relationType varchar(255) null
 		);
 	`)
 }

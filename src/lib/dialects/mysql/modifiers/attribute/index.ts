@@ -6,7 +6,6 @@ import { attributeRemoveQuery } from './attribute-remove'
 import { attributeRenameQuery } from './attribute-rename'
 import { attributeChangeTypeQuery } from './attribute-change-type'
 import { attributeChangeDefaultQuery } from './attribute-change-default'
-import { attributeChangeNullableQuery } from './attribute-change-nullable'
 
 export const getAttributeQueries = (actions: DiffAction[]): string[] => {
 	return actions
@@ -22,13 +21,12 @@ export const getAttributeQueries = (actions: DiffAction[]): string[] => {
 					return attributeChangeTypeQuery(action)
 				case 'attribute-change-default':
 					return attributeChangeDefaultQuery(action)
-				case 'attribute-change-nullable':
-					return attributeChangeNullableQuery(action)
 
 				default:
 					return undefined
 			}
 		})
+		.flat()
 		.filter((x: any): x is string => x !== undefined)
 		.map((x) => format(x, { language: 'mysql', keywordCase: 'upper' }))
 }

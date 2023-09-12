@@ -7,15 +7,13 @@ export const modelAddQuery = (action: ModelAddAction) => {
 	return `
 		CREATE TABLE IF NOT EXISTS \`${model.tableName}\` (
 			${[...model.attributes]
-				// .sort((a, b) => (a.order || 0) - (b.order || 0))
+				.sort((a, b) => (a.order || 0) - (b.order || 0))
 				.map((attribute) => {
 					let def = attribute.default
 
-					return `\`${attribute.name}\` ${mapAttributeTypeToMySQLType(
-						attribute.type
-					)} ${attribute.nullable ? 'NULL' : 'NOT NULL'} ${
-						def ? `DEFAULT ${def}` : ''
-					}`
+					return `\`${attribute.name}\` ${mapAttributeTypeToMySQLType(attribute.type)} ${
+						attribute.nullable ? 'NULL' : 'NOT NULL'
+					} ${def ? `DEFAULT ${def}` : ''} ${attribute.name === 'id' ? 'PRIMARY KEY' : ''}`
 				})
 				.join(',')}
 			${

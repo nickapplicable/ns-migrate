@@ -18,15 +18,13 @@ export const updateRefs = async (query: QueryFn, schema: Schema) => {
 
 		for (const attr of model.attributes) {
 			await query(`
-				insert into _ref (id, type, name, tableName, posX, posY)
-				VALUES('${attr.id}', 'a', '${attr.name}', '${model.tableName}', ${model.posX}, ${model.posY})
+				insert into _ref (id, type, name, tableName)
+				VALUES('${attr.id}', 'a', '${attr.name}', '${model.tableName}')
 				ON DUPLICATE KEY UPDATE
 					id = '${attr.id}',
 					type = 'a',
 					name = '${attr.name}',
-					tableName = '${model.tableName}',
-					posX = ${model.posX},
-					posY = ${model.posY}
+					tableName = '${model.tableName}'
 			`)
 		}
 
@@ -38,15 +36,14 @@ export const updateRefs = async (query: QueryFn, schema: Schema) => {
 
 		for (const relation of sourceRelations) {
 			await query(`
-				insert into _ref (id, type, name, tableName, posX, posY)
-				VALUES('${relation.id}', 'r', '${relation.targetName}Id', '${model.tableName}', ${model.posX}, ${model.posY})
+				insert into _ref (id, type, name, tableName, relationType)
+				VALUES('${relation.id}', 'r', '${relation.targetName}Id', '${model.tableName}', '${relation.type}')
 				ON DUPLICATE KEY UPDATE
 					id = '${relation.id}',
 					type = 'r',
 					name = '${relation.targetName}Id',
 					tableName = '${model.tableName}',
-					posX = ${model.posX},
-					posY = ${model.posY}
+					relationType = '${relation.type}'
 			`)
 		}
 
@@ -59,15 +56,14 @@ export const updateRefs = async (query: QueryFn, schema: Schema) => {
 
 		for (const relation of targetRelations) {
 			await query(`
-				insert into _ref (id, type, name, tableName, posX, posY)
-				VALUES('${relation.id}', 'r', '${relation.sourceName}Id', '${model.tableName}', ${model.posX}, ${model.posY})
+				insert into _ref (id, type, name, tableName, relationType)
+				VALUES('${relation.id}', 'r', '${relation.sourceName}Id', '${model.tableName}', '${relation.type}')
 				ON DUPLICATE KEY UPDATE
 					id = '${relation.id}',
 					type = 'r',
 					name = '${relation.sourceName}Id',
 					tableName = '${model.tableName}',
-					posX = ${model.posX},
-					posY = ${model.posY}
+					relationType = '${relation.type}'
 			`)
 		}
 	}

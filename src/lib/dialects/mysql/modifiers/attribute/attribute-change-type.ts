@@ -1,7 +1,9 @@
 import { AttributeChangeTypeAction } from '../../differs/attribute/attribute-change-type'
 
 export const attributeChangeTypeQuery = (action: AttributeChangeTypeAction) => {
-	const { tableName, attributeName, to } = action.data
+	const { tableName, attributeName, to, optional } = action.data
 
-	return `ALTER TABLE \`${tableName}\` ALTER COLUMN \`${attributeName}\` TYPE ${to};`
+	const nullable = optional ? 'NULL' : 'NOT NULL'
+
+	return `ALTER TABLE \`${tableName}\` MODIFY \`${attributeName}\` ${to} ${nullable};`
 }
