@@ -15,5 +15,10 @@ export const getColumnDefaults = async (query: QueryFn) => {
 		FROM information_schema.COLUMNS
 		WHERE TABLE_SCHEMA = 'db'
 	`)
-	return validate.parse(rows)
+	return validate.parse(
+		rows.map((row: Record<string, string>) => ({
+			...row,
+			defaultValue: row.defaultValue === '1' ? 'true' : row.defaultValue === '0' ? 'false' : row.defaultValue,
+		}))
+	)
 }
