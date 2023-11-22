@@ -15,28 +15,17 @@ export const getSchema = async (query: QueryFn): Promise<Schema> => {
 		models: tables
 			.filter((x) => x.name[0] !== '_')
 			.map((table) => {
-				const _d_table = _dynamo.find(
-					(_d) => _d.type === 'm' && _d.name === table.name
-				)
+				const _d_table = _dynamo.find((_d) => _d.type === 'm' && _d.name === table.name)
 
 				const hasAuditDates =
 					columns
 						.filter((x) => x.tableName === table.name)
-						.filter(
-							(x) =>
-								x.name === 'createdAt' ||
-								x.name === 'updatedAt' ||
-								x.name === 'deletedAt'
-						).length === 3
+						.filter((x) => x.name === 'createdAt' || x.name === 'updatedAt' || x.name === 'deletedAt')
+						.length === 3
 
 				const attributes = columns
 					.filter((x) => x.tableName === table.name)
-					.filter(
-						(x) =>
-							x.name !== 'createdAt' &&
-							x.name !== 'updatedAt' &&
-							x.name !== 'deletedAt'
-					)
+					.filter((x) => x.name !== 'createdAt' && x.name !== 'updatedAt' && x.name !== 'deletedAt')
 					.map((column) => {
 						const _d_attr = _dynamo.find(
 							(_d) =>
@@ -50,11 +39,8 @@ export const getSchema = async (query: QueryFn): Promise<Schema> => {
 							name: column.name,
 							type: mapPgTypeToAttributeType(column.type),
 							default:
-								defaults.find(
-									(x) =>
-										x.tableName === table.name &&
-										x.columnName === column.name
-								)?.defaultValue || null,
+								defaults.find((x) => x.tableName === table.name && x.columnName === column.name)
+									?.defaultValue || null,
 							nullable: !column.notnull,
 							modelId: _d_table?.id,
 						}
@@ -66,6 +52,8 @@ export const getSchema = async (query: QueryFn): Promise<Schema> => {
 					id: _d_table?.id || null,
 					tableName: table.name,
 					auditDates: hasAuditDates,
+					posX: _d_table?.posX || 0,
+					posY: _d_table?.posY || 0,
 					attributes: [...attributes],
 				}
 			}),
