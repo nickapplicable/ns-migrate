@@ -52,8 +52,8 @@ export const getSchema = async (query: QueryFn): Promise<Schema> => {
 					id: _d_table?.id || null,
 					tableName: table.name,
 					auditDates: hasAuditDates,
-					posX: _d_table?.posX || 0,
-					posY: _d_table?.posY || 0,
+					posX: 0,
+					posY: 0,
 					attributes: [...attributes],
 				}
 			}),
