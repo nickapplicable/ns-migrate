@@ -31,7 +31,7 @@ export const updateRefs = async (query: QueryFn, schema: Schema) => {
 		const sourceRelations = schema.relations.filter(
 			(relation) =>
 				relation.sourceId === model.id &&
-				relation.type === RelationType.manyToOne
+				(relation.type === RelationType.manyToOne || relation.type === RelationType.oneToOne)
 		)
 
 		for (const relation of sourceRelations) {
@@ -48,10 +48,7 @@ export const updateRefs = async (query: QueryFn, schema: Schema) => {
 		}
 
 		const targetRelations = schema.relations.filter(
-			(relation) =>
-				relation.targetId === model.id &&
-				(relation.type === RelationType.oneToMany ||
-					relation.type === RelationType.oneToOne)
+			(relation) => relation.targetId === model.id && relation.type === RelationType.oneToMany
 		)
 
 		for (const relation of targetRelations) {

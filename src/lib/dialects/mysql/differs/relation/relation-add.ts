@@ -15,7 +15,7 @@ export const diffRelationAdd = (originalSchema: Schema, newSchema: Schema) => {
 	for (const newRelation of newSchema.relations) {
 		const originalRelation = originalSchema.relations.find((relation) => relation.id === newRelation.id)
 
-		if (originalRelation) console.log('found original relation', originalRelation)
+		// if (originalRelation) console.log('found original relation', originalRelation)
 
 		if (!originalRelation) {
 			const fromModelId = newRelation.type === 'oneToMany' ? newRelation.targetId : newRelation.sourceId
@@ -30,7 +30,7 @@ export const diffRelationAdd = (originalSchema: Schema, newSchema: Schema) => {
 
 			const column = `${newRelation.type === 'oneToMany' ? newRelation.sourceName : newRelation.targetName}Id`
 
-			console.log('add relation', { fromTable, toTable, column })
+			// console.log('add relation', { fromTable, toTable, column })
 
 			diffs.push({
 				type: 'relation-add',

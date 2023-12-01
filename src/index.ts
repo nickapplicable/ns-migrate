@@ -100,8 +100,6 @@ export const migrate = async (dialect: Dialect, credentials: Credentials | DBURL
 	// introspect the database and create a schema object
 	const dbSchema = await d.getSchema(query)
 
-	console.log('dbSchema', dbSchema)
-
 	// console.dir(dbSchema, { depth: 4, colors: true })
 
 	// compare the db schema with the incoming schema, and get the sync queries
