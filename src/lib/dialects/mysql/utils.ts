@@ -6,6 +6,8 @@ export const mapAttributeTypeToMySQLType = (type: AttributeType) => {
 		case 'text':
 		case 'password':
 			return 'text'
+		case 'base64':
+			return 'longtext'
 		case 'uuid':
 			return 'varchar(36)'
 		case 'int':
@@ -30,6 +32,8 @@ export const mapMySQLTypeToAttributeType = (type: string): AttributeType => {
 		case 'text':
 		case 'password':
 			return AttributeType.text
+		case 'longtext':
+			return AttributeType.base64
 		case 'varchar(36)':
 			return AttributeType.uuid
 		case 'int(11)':

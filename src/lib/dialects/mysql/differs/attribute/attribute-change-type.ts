@@ -1,5 +1,5 @@
-import { mapAttributeTypeToPgType } from '../../../../dialects/postgres/utils'
 import type { Schema } from '../../../../types'
+import { mapAttributeTypeToMySQLType } from '../../utils'
 
 export type AttributeChangeTypeAction = {
 	type: 'attribute-change-type'
@@ -27,8 +27,8 @@ export const diffAttributeChangeType = (originalSchema: Schema, newSchema: Schem
 			// if the attr is gone, it can't be renamed
 			if (!newAttribute) continue
 
-			const originalType = mapAttributeTypeToPgType(originalAttribute.type)
-			const newType = mapAttributeTypeToPgType(newAttribute.type)
+			const originalType = mapAttributeTypeToMySQLType(originalAttribute.type)
+			const newType = mapAttributeTypeToMySQLType(newAttribute.type)
 
 			if (originalType !== newType || originalAttribute.nullable !== newAttribute.nullable) {
 				diffs.push({

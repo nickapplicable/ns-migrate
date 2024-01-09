@@ -6,6 +6,8 @@ export const mapAttributeTypeToPgType = (type: AttributeType) => {
 		case 'text':
 		case 'password':
 			return 'text'
+		case 'base64':
+			return 'longtext'
 		case 'uuid':
 			return 'uuid'
 		case 'int':
@@ -30,6 +32,8 @@ export const mapPgTypeToAttributeType = (type: string): AttributeType => {
 		case 'text':
 		case 'password':
 			return AttributeType.text
+		case 'longtext':
+			return AttributeType.base64
 		case 'uuid':
 			return AttributeType.uuid
 		case 'int8':

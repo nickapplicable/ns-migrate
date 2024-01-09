@@ -4,6 +4,7 @@ export enum AttributeType {
 	'uuid' = 'uuid',
 	'a_i' = 'a_i',
 	'text' = 'text',
+	'base64' = 'base64',
 	'password' = 'password',
 	'int' = 'int',
 	'float' = 'float',
