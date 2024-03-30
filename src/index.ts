@@ -33,13 +33,18 @@ export const getSchema = async (credentials: Credentials | Connection) => {
 	})
 }
 
-export const migrate = async (credentials: Credentials | DBURL, schema: Schema, force = false) => {
-	let client: Connection | null = null
+type Options = {
+	force?: boolean
+	log?: boolean
+}
 
-	client = await createConnection(isCredentials(credentials) ? credentials : { uri: credentials as DBURL })
+export const migrate = async (credentials: Credentials | DBURL, schema: Schema, options: Options) => {
+	const { force = false, log = false } = options
+
+	const client = await createConnection(isCredentials(credentials) ? credentials : { uri: credentials as DBURL })
 
 	const query = async (sql: string) => {
-		const [rows] = await (client as Connection).query(sql)
+		const [rows] = await client.query(sql)
 		return rows
 	}
 
@@ -56,12 +61,14 @@ export const migrate = async (credentials: Credentials | DBURL, schema: Schema, 
 
 	// console log each of the sync queries
 	for (const sql of queries) {
-		console.log(sql)
-		console.log(' ')
+		if (log) {
+			console.log(sql)
+			console.log(' ')
+		}
 		await query(sql)
 	}
 
 	await mysql.updateRefs(query, schema)
 
-	await (client as Connection).end()
+	await client.end()
 }
