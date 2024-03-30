@@ -1,6 +1,6 @@
 {
 	"name": "ns-migrate",
-	"version": "0.0.21",
+	"version": "0.1.0",
 	"license": "MIT",
 	"description": "",
 	"main": "dist/index.js",
@@ -19,14 +19,12 @@
 	},
 	"dependencies": {
 		"mysql2": "^3.6.0",
-		"pg": "^8.11.1",
 		"sql-formatter": "^12.2.4",
 		"zod": "^3.21.4"
 	},
 	"devDependencies": {
 		"@changesets/cli": "^2.26.2",
 		"@types/node": "^20.4.5",
-		"@types/pg": "^8.10.2",
 		"tsup": "^7.1.0",
 		"typescript": "^5.1.6"
 	},

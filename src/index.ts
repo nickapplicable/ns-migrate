@@ -1,7 +1,6 @@
-import { Client, Pool } from 'pg'
 import { createConnection, Connection } from 'mysql2/promise'
-import { QueryFn, Schema } from './lib/types'
-import { Dialect, getDialect } from './lib/dialects'
+import { Schema } from './lib/types'
+import mysql from './lib/mysql'
 
 type Credentials = {
 	host: string
@@ -24,86 +23,36 @@ const isCredentials = (credentials: any): credentials is Credentials => {
 
 type DBURL = string
 
-export const getSchema = async (dialect: Dialect, credentials: Credentials | Client | Pool | Connection) => {
-	if (dialect === 'postgres') {
-		let client = credentials
+export const getSchema = async (credentials: Credentials | Connection) => {
+	const client: Connection = await (async () =>
+		isCredentials(credentials) ? await createConnection(credentials) : credentials)()
 
-		if (isCredentials(credentials)) {
-			client = new Client(credentials)
-			await client.connect()
-		} else if (credentials instanceof Client || credentials instanceof Pool) {
-			client = credentials
-		}
-
-		if (!client) return
-
-		const query = async (sql: string) => {
-			const { rows } = await (client as Client | Pool).query(sql)
-			return rows
-		}
-
-		return await getDialect('postgres').getSchema(query)
-	}
-
-	if (dialect === 'mysql') {
-		let client = credentials
-
-		if (isCredentials(credentials)) {
-			client = await createConnection(credentials)
-		} else {
-			client = credentials
-		}
-
-		if (!client) return
-
-		const query = async (sql: string) => {
-			const [rows] = await (client as Connection).query(sql)
-			return rows
-		}
-
-		return await getDialect('mysql').getSchema(query)
-	}
+	return mysql.getSchema(async (sql: string) => {
+		const [rows] = await client.query(sql)
+		return rows
+	})
 }
 
-export const migrate = async (dialect: Dialect, credentials: Credentials | DBURL, schema: Schema, force = false) => {
-	let client: Client | Pool | Connection | null = null
-	let query: QueryFn | null = null
+export const migrate = async (credentials: Credentials | DBURL, schema: Schema, force = false) => {
+	let client: Connection | null = null
 
-	if (dialect === 'postgres') {
-		client = new Client(credentials)
-		await client.connect()
+	client = await createConnection(isCredentials(credentials) ? credentials : { uri: credentials as DBURL })
 
-		query = async (sql: string) => {
-			const { rows } = await (client as Client | Pool).query(sql)
-			return rows
-		}
-	}
-
-	if (dialect === 'mysql') {
-		client = await createConnection(isCredentials(credentials) ? credentials : { uri: credentials as DBURL })
-
-		query = async (sql: string) => {
-			const [rows] = await (client as Connection).query(sql)
-			return rows
-		}
+	const query = async (sql: string) => {
+		const [rows] = await (client as Connection).query(sql)
+		return rows
 	}
 
 	if (!query) return
 
-	// connect to the database
-
-	const d = getDialect(dialect)
-
 	// create the ref table if it doesn't already exist
-	await d.createRefTable(query)
+	await mysql.createRefTable(query)
 
 	// introspect the database and create a schema object
-	const dbSchema = await d.getSchema(query)
-
-	// console.dir(dbSchema, { depth: 4, colors: true })
+	const dbSchema = await mysql.getSchema(query)
 
 	// compare the db schema with the incoming schema, and get the sync queries
-	const queries = d.getQueries(dbSchema, schema, force)
+	const queries = mysql.getQueries(dbSchema, schema, force)
 
 	// console log each of the sync queries
 	for (const sql of queries) {
@@ -112,11 +61,7 @@ export const migrate = async (dialect: Dialect, credentials: Credentials | DBURL
 		await query(sql)
 	}
 
-	await d.updateRefs(query, schema)
+	await mysql.updateRefs(query, schema)
 
-	if (dialect === 'postgres') {
-		await (client as Client | Pool).end()
-	} else {
-		await (client as Connection).end()
-	}
+	await (client as Connection).end()
 }
