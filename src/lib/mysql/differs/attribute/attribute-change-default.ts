@@ -24,6 +24,9 @@ export const diffAttributeChangeDefault = (originalSchema: Schema, newSchema: Sc
 			// if the attr is gone, it can't be renamed
 			if (!newAttribute) continue
 
+			// can't set defaults on text columns
+			if (newAttribute.type.toLowerCase() === 'text') continue
+
 			if (originalAttribute.default === 'NULL' && newAttribute.default === null) continue
 
 			if (originalAttribute.default !== newAttribute.default) {

@@ -9,11 +9,13 @@ export const modelAddQuery = (action: ModelAddAction) => {
 			${[...model.attributes]
 				.sort((a, b) => (a.order || 0) - (b.order || 0))
 				.map((attribute) => {
-					let def = attribute.default
+					const name = attribute.name
+					const type = mapAttributeTypeToMySQLType(attribute.type)
+					const nullable = attribute.nullable ? 'NULL' : 'NOT NULL'
+					const def = type !== 'text' && attribute.default ? `DEFAULT ${attribute.default}` : ''
+					const pk = attribute.name === 'id' ? 'PRIMARY KEY' : ''
 
-					return `\`${attribute.name}\` ${mapAttributeTypeToMySQLType(attribute.type)} ${
-						attribute.nullable ? 'NULL' : 'NOT NULL'
-					} ${def ? `DEFAULT ${def}` : ''} ${attribute.name === 'id' ? 'PRIMARY KEY' : ''}`
+					return `\`${name}\` ${type} ${nullable} ${def} ${pk}`
 				})
 				.join(',')}
 			${
