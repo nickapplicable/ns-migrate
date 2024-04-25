@@ -28,6 +28,8 @@ export const diffAttributeChangeDefault = (originalSchema: Schema, newSchema: Sc
 			if (newAttribute.type.toLowerCase() === 'text') continue
 
 			if (originalAttribute.default === 'NULL' && newAttribute.default === null) continue
+			if (originalAttribute.default === 'current_timestamp()' && newAttribute.default === 'CURRENT_TIMESTAMP')
+				continue
 
 			if (originalAttribute.default !== newAttribute.default) {
 				diffs.push({
