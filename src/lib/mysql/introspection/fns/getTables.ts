@@ -7,11 +7,11 @@ const validate = z.array(
 	})
 )
 
-export const getTables = async (query: QueryFn) => {
+export const getTables = async (query: QueryFn, dbName: string) => {
 	const rows = await query(`
 		SELECT TABLE_NAME as name
 		FROM information_schema.TABLES as t
-		WHERE t.TABLE_SCHEMA = 'db'
+		WHERE t.TABLE_SCHEMA = '${dbName}'
 	`)
 
 	return validate.parse(rows)

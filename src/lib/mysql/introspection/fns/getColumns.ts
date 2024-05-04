@@ -10,11 +10,11 @@ const validate = z.array(
 	})
 )
 
-export const getColumns = async (query: QueryFn) => {
+export const getColumns = async (query: QueryFn, dbName: string) => {
 	const rows = await query(`
 		SELECT COLUMN_NAME as name, TABLE_NAME as tableName, COLUMN_TYPE as type, IS_NULLABLE as notnull
 		FROM information_schema.COLUMNS
-		WHERE TABLE_SCHEMA = 'db'
+		WHERE TABLE_SCHEMA = '${dbName}'
 	`)
 
 	return validate.parse(

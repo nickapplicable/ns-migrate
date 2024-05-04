@@ -9,11 +9,11 @@ const validate = z.array(
 	})
 )
 
-export const getColumnDefaults = async (query: QueryFn) => {
+export const getColumnDefaults = async (query: QueryFn, dbName: string) => {
 	const rows = await query(`
 		SELECT TABLE_NAME as tableName, COLUMN_NAME as columnName, COLUMN_DEFAULT as defaultValue
 		FROM information_schema.COLUMNS
-		WHERE TABLE_SCHEMA = 'db'
+		WHERE TABLE_SCHEMA = '${dbName}'
 	`)
 	return validate.parse(
 		rows.map((row: Record<string, string>) => ({

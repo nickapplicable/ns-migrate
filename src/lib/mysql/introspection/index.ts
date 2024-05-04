@@ -6,12 +6,12 @@ import { getColumnDefaults } from './fns/getColumnDefaults'
 import { QueryFn, Schema, Relation, RelationType } from '../../types'
 import { getForeignKeyConstraints } from './fns/getForeignKeyConstraints'
 
-export const getSchema = async (query: QueryFn): Promise<Schema> => {
+export const getSchema = async (query: QueryFn, dbName: string): Promise<Schema> => {
 	const _refs = await getRefs(query)
-	const tables = await getTables(query)
-	const columns = await getColumns(query)
-	const defaults = await getColumnDefaults(query)
-	const fks = await getForeignKeyConstraints(query)
+	const tables = await getTables(query, dbName)
+	const columns = await getColumns(query, dbName)
+	const defaults = await getColumnDefaults(query, dbName)
+	const fks = await getForeignKeyConstraints(query, dbName)
 
 	const models = tables
 		.filter((x) => x.name !== '_ref')
