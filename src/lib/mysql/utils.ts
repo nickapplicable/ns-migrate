@@ -13,6 +13,7 @@ export const mapAttributeTypeToMySQLType = (type: AttributeType) => {
 		case 'id':
 			return 'varchar(36)'
 		case 'int':
+		case 'a_i':
 			return 'int(11)'
 		case 'float':
 			return 'float'
@@ -29,7 +30,7 @@ export const mapAttributeTypeToMySQLType = (type: AttributeType) => {
 	}
 }
 
-export const mapMySQLTypeToAttributeType = (type: string): AttributeType => {
+export const mapMySQLTypeToAttributeType = (type: string, autoIncrement: boolean): AttributeType => {
 	switch (type) {
 		case 'text':
 		case 'password':
@@ -41,6 +42,7 @@ export const mapMySQLTypeToAttributeType = (type: string): AttributeType => {
 		case 'varchar(255)':
 			return AttributeType.varchar
 		case 'int(11)':
+			if (autoIncrement) return AttributeType.a_i
 			return AttributeType.int
 		case 'float':
 			return AttributeType.float

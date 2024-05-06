@@ -9,6 +9,7 @@ export type AttributeChangeTypeAction = {
 		from: string
 		to: string
 		optional: boolean
+		autoIncrement: boolean
 	}
 }
 
@@ -30,7 +31,14 @@ export const diffAttributeChangeType = (originalSchema: Schema, newSchema: Schem
 			const originalType = mapAttributeTypeToMySQLType(originalAttribute.type)
 			const newType = mapAttributeTypeToMySQLType(newAttribute.type)
 
-			if (originalType !== newType || originalAttribute.nullable !== newAttribute.nullable) {
+			const originalAutoIncrement = originalAttribute.type === 'a_i'
+			const newAutoIncrement = newAttribute.type === 'a_i'
+
+			if (
+				originalType !== newType ||
+				originalAttribute.nullable !== newAttribute.nullable ||
+				originalAutoIncrement !== newAutoIncrement
+			) {
 				diffs.push({
 					type: 'attribute-change-type',
 					data: {
@@ -38,7 +46,8 @@ export const diffAttributeChangeType = (originalSchema: Schema, newSchema: Schem
 						attributeName: newAttribute.name,
 						from: originalType,
 						to: newType,
-						optional: newAttribute.nullable,
+						optional: newAutoIncrement ? false : newAttribute.nullable,
+						autoIncrement: newAutoIncrement,
 					},
 				})
 			}

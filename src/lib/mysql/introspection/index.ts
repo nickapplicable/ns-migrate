@@ -35,10 +35,12 @@ export const getSchema = async (query: QueryFn, dbName: string): Promise<Schema>
 							_ref.tableName === table.name
 					)
 
+					let type = mapMySQLTypeToAttributeType(column.type, column.autoIncrement)
+
 					const attr = {
 						id: _ref_attr?.id || null,
 						name: column.name,
-						type: mapMySQLTypeToAttributeType(column.type),
+						type,
 						default:
 							defaults.find((x) => x.tableName === table.name && x.columnName === column.name)
 								?.defaultValue || null,
