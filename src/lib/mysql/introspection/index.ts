@@ -79,8 +79,13 @@ export const getSchema = async (query: QueryFn, dbName: string): Promise<Schema>
 				(_ref) => _ref.type === 'r' && _ref.name === fk.columnName && _ref.tableName === fk.tableName
 			)
 
-			const sourceModel = models.find((x) => x.tableName === fk.tableName)
-			const targetModel = models.find((x) => x.tableName === fk.targetTable)
+			const type = _ref_fk?.relationType === 'oneToMany' ? RelationType.oneToMany : RelationType.manyToOne
+
+			const tableNameA = type === RelationType.manyToOne ? fk.tableName : fk.targetTable
+			const tableNameB = type === RelationType.manyToOne ? fk.targetTable : fk.tableName
+
+			const sourceModel = models.find((x) => x.tableName === tableNameA)
+			const targetModel = models.find((x) => x.tableName === tableNameB)
 
 			if (!_ref_fk || !sourceModel || !targetModel || !sourceModel.id || !targetModel.id) return null
 
@@ -90,7 +95,7 @@ export const getSchema = async (query: QueryFn, dbName: string): Promise<Schema>
 			return {
 				id: _ref_fk.id,
 				optional,
-				type: RelationType.manyToOne,
+				type,
 				sourceId: sourceModel.id,
 				sourceName: sourceModel.tableName,
 				sourceOrder: 0,
@@ -100,6 +105,8 @@ export const getSchema = async (query: QueryFn, dbName: string): Promise<Schema>
 			}
 		})
 		.filter(<T>(x: T | null): x is T => x !== null)
+
+	// console.log('relations', relations)
 
 	return {
 		models,

@@ -18,7 +18,7 @@ export const getColumnDefaults = async (query: QueryFn, dbName: string) => {
 	return validate.parse(
 		rows.map((row: Record<string, string>) => ({
 			...row,
-			defaultValue: row.defaultValue === '1' ? 'true' : row.defaultValue === '0' ? 'false' : row.defaultValue,
+			defaultValue: row.defaultValue,
 		}))
 	)
 }

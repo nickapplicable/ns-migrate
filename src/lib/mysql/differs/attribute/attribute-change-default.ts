@@ -1,4 +1,4 @@
-import type { Schema } from '../../../types'
+import { AttributeType, type Schema } from '../../../types'
 
 export type AttributeChangeDefaultAction = {
 	type: 'attribute-change-default'
@@ -22,14 +22,40 @@ export const diffAttributeChangeDefault = (originalSchema: Schema, newSchema: Sc
 			const newAttribute = newModel.attributes.find((attribute) => attribute.id === originalAttribute.id)
 
 			// if the attr is gone, it can't be renamed
-			if (!newAttribute) continue
+			if (!newAttribute) {
+				continue
+			}
+
+			console.log(
+				newAttribute.name,
+				typeof originalAttribute.default,
+				originalAttribute.default,
+				typeof newAttribute.default,
+				newAttribute.default
+			)
 
 			// can't set defaults on text columns
-			if (newAttribute.type.toLowerCase() === 'text') continue
-
-			if (originalAttribute.default === 'NULL' && newAttribute.default === null) continue
-			if (originalAttribute.default === 'current_timestamp()' && newAttribute.default === 'CURRENT_TIMESTAMP')
+			if (newAttribute.type.toLowerCase() === 'text') {
 				continue
+			}
+
+			if (originalAttribute.default === 'NULL' && newAttribute.default === null) {
+				continue
+			}
+
+			if (originalAttribute.default === 'current_timestamp()' && newAttribute.default === 'CURRENT_TIMESTAMP') {
+				continue
+			}
+
+			if (originalAttribute.type === AttributeType.boolean && newAttribute.type === AttributeType.boolean) {
+				if (originalAttribute.default === '0' && newAttribute.default === 'false') {
+					continue
+				}
+
+				if (originalAttribute.default === '1' && newAttribute.default === 'true') {
+					continue
+				}
+			}
 
 			if (originalAttribute.default !== newAttribute.default) {
 				diffs.push({

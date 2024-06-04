@@ -1,6 +1,6 @@
 {
 	"name": "ns-migrate",
-	"version": "0.1.6",
+	"version": "0.1.7",
 	"license": "MIT",
 	"description": "",
 	"main": "dist/index.js",
