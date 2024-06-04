@@ -17,6 +17,7 @@ export const getForeignKeyConstraints = async (query: QueryFn, dbName: string) =
 		FROM information_schema.KEY_COLUMN_USAGE as k, information_schema.TABLE_CONSTRAINTS as c
 		WHERE k.CONSTRAINT_SCHEMA = '${dbName}'
 		AND c.CONSTRAINT_NAME = k.CONSTRAINT_NAME
+		AND c.CONSTRAINT_TYPE = 'FOREIGN KEY'
 		AND k.TABLE_NAME != '_ref'
 	`)
 

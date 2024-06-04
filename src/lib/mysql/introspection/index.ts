@@ -74,7 +74,6 @@ export const getSchema = async (query: QueryFn, dbName: string): Promise<Schema>
 	// }
 
 	const relations = fks
-		.filter((x) => x.type === 'FOREIGN KEY')
 		.map((fk) => {
 			const _ref_fk = _refs.find(
 				(_ref) => _ref.type === 'r' && _ref.name === fk.columnName && _ref.tableName === fk.tableName
@@ -85,15 +84,13 @@ export const getSchema = async (query: QueryFn, dbName: string): Promise<Schema>
 
 			if (!_ref_fk || !sourceModel || !targetModel || !sourceModel.id || !targetModel.id) return null
 
-			const type = RelationType.manyToOne
-
 			const optional =
 				targetModel.attributes.find((x) => x.name === sourceModel.tableName + 'Id')?.nullable || false
 
 			return {
 				id: _ref_fk.id,
 				optional,
-				type,
+				type: RelationType.manyToOne,
 				sourceId: sourceModel.id,
 				sourceName: sourceModel.tableName,
 				sourceOrder: 0,

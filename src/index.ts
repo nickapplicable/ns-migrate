@@ -33,17 +33,31 @@ export const getSchema = async (credentials: Credentials | Connection, dbName: s
 	}, dbName)
 }
 
+export const LogLevel = {
+	none: 0,
+	log: 1,
+	deep: 2,
+} as const
+
 type Options = {
 	force?: boolean
-	log?: boolean
+	log?: (typeof LogLevel)[keyof typeof LogLevel]
+	debug?: boolean
 }
 
 export const migrate = async (credentials: Credentials | DBURL, schema: Schema, options: Options) => {
-	const { force = false, log = false } = options
+	const { force = false, log = LogLevel.none, debug = false } = options
+	// const force: boolean = true
+	// const debug: boolean = false
+	// const log: number = 1
 
 	const client = await createConnection(isCredentials(credentials) ? credentials : { uri: credentials as DBURL })
 
 	const query = async (sql: string) => {
+		if (log === LogLevel.deep) {
+			console.log(sql)
+			console.log(' ')
+		}
 		const [rows] = await client.query(sql)
 		return rows
 	}
@@ -62,14 +76,15 @@ export const migrate = async (credentials: Credentials | DBURL, schema: Schema, 
 
 	// console log each of the sync queries
 	for (const sql of queries) {
-		if (log) {
+		if (log === LogLevel.log) {
 			console.log(sql)
 			console.log(' ')
 		}
-		await query(sql)
+
+		if (!debug) await query(sql)
 	}
 
-	await mysql.updateRefs(query, schema)
+	if (!debug) await mysql.updateRefs(query, schema)
 
 	await client.end()
 }

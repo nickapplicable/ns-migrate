@@ -1,8 +1,10 @@
 import { RelationRemoveAction } from '../../differs/relation/relation-remove'
 
 export const relationRemoveQuery = (action: RelationRemoveAction) => {
-	const { relation } = action.data
+	const { fromTable, name } = action.data
 
-	// return `DROP TABLE \`${tableName}\`;`
-	return ''
+	return `
+		ALTER TABLE \`${fromTable}\`
+		DROP FOREIGN KEY \`${name}\`
+	`
 }

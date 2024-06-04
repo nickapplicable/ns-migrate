@@ -18,7 +18,7 @@ export const updateRefs = async (query: QueryFn, schema: Schema) => {
 
 		for (const attr of model.attributes) {
 			await query(`
-				insert into _ref (id, type, name, tableName)
+				INSERT INTO _ref (id, type, name, tableName)
 				VALUES('${attr.id}', 'a', '${attr.name}', '${model.tableName}')
 				ON DUPLICATE KEY UPDATE
 					id = '${attr.id}',
@@ -36,7 +36,7 @@ export const updateRefs = async (query: QueryFn, schema: Schema) => {
 
 		for (const relation of sourceRelations) {
 			await query(`
-				insert into _ref (id, type, name, tableName, relationType)
+				INSERT INTO _ref (id, type, name, tableName, relationType)
 				VALUES('${relation.id}', 'r', '${relation.targetName}Id', '${model.tableName}', '${relation.type}')
 				ON DUPLICATE KEY UPDATE
 					id = '${relation.id}',
@@ -53,7 +53,7 @@ export const updateRefs = async (query: QueryFn, schema: Schema) => {
 
 		for (const relation of targetRelations) {
 			await query(`
-				insert into _ref (id, type, name, tableName, relationType)
+				INSERT INTO _ref (id, type, name, tableName, relationType)
 				VALUES('${relation.id}', 'r', '${relation.sourceName}Id', '${model.tableName}', '${relation.type}')
 				ON DUPLICATE KEY UPDATE
 					id = '${relation.id}',
