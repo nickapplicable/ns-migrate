@@ -21,7 +21,6 @@ export const diffAttributeRemove = (originalSchema: Schema, newSchema: Schema) =
 			const newAttribute = newModel.attributes.find((attribute) => attribute.id === originalAttribute.id)
 
 			if (!newAttribute) {
-				console.log('missing attribute', originalModel)
 				diffs.push({
 					type: 'attribute-remove',
 					data: {

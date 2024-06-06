@@ -26,14 +26,6 @@ export const diffAttributeChangeDefault = (originalSchema: Schema, newSchema: Sc
 				continue
 			}
 
-			console.log(
-				newAttribute.name,
-				typeof originalAttribute.default,
-				originalAttribute.default,
-				typeof newAttribute.default,
-				newAttribute.default
-			)
-
 			// can't set defaults on text columns
 			if (newAttribute.type.toLowerCase() === 'text') {
 				continue
