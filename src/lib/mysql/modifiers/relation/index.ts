@@ -1,22 +1,25 @@
 import { format } from 'sql-formatter'
 import { DiffAction } from '../../types'
-
 import { relationAddQuery } from './relation-add'
 import { relationRemoveQuery } from './relation-remove'
+import { Query, isQuery } from '../../utils'
 
-export const getRelationQueries = (actions: DiffAction[]): string[] => {
+export const getRelationQueries = (actions: DiffAction[]): Query[] => {
 	return actions
 		.map((action) => {
 			switch (action.type) {
 				case 'relation-add':
-					return relationAddQuery(action)
+					return { priority: action.priority, query: relationAddQuery(action) }
 				case 'relation-remove':
-					return relationRemoveQuery(action)
+					return { priority: action.priority, query: relationRemoveQuery(action) }
 
 				default:
 					return undefined
 			}
 		})
-		.filter((x: any): x is string => x !== undefined)
-		.map((x) => format(x, { language: 'mysql', keywordCase: 'upper' }))
+		.filter(isQuery)
+		.map((x) => ({
+			query: format(x.query, { language: 'mysql', keywordCase: 'upper' }),
+			priority: x.priority,
+		}))
 }

@@ -1,7 +1,9 @@
 import type { Attribute, Schema } from '../../../types'
+import { Priority } from '../../utils'
 
 export type AttributeAddAction = {
 	type: 'attribute-add'
+	priority: number
 	data: {
 		tableName: string
 		attribute: Attribute
@@ -23,6 +25,7 @@ export const diffAttributeAdd = (originalSchema: Schema, newSchema: Schema) => {
 			if (!originalAttribute) {
 				diffs.push({
 					type: 'attribute-add',
+					priority: Priority.ATTRIBUTE,
 					data: {
 						tableName: newModel.tableName,
 						attribute: newAttribute,

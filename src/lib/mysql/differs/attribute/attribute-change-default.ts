@@ -1,7 +1,9 @@
 import { AttributeType, type Schema } from '../../../types'
+import { Priority } from '../../utils'
 
 export type AttributeChangeDefaultAction = {
 	type: 'attribute-change-default'
+	priority: number
 	data: {
 		tableName: string
 		attributeName: string
@@ -52,6 +54,7 @@ export const diffAttributeChangeDefault = (originalSchema: Schema, newSchema: Sc
 			if (originalAttribute.default !== newAttribute.default) {
 				diffs.push({
 					type: 'attribute-change-default',
+					priority: Priority.ATTRIBUTE,
 					data: {
 						tableName: newModel.tableName,
 						attributeName: newAttribute.name,

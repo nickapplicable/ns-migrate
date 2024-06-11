@@ -1,7 +1,9 @@
-import type { Relation, Schema } from '../../../types'
+import type { Schema } from '../../../types'
+import { Priority } from '../../utils'
 
 export type RelationRemoveAction = {
 	type: 'relation-remove'
+	priority: number
 	data: {
 		name: string
 		fromTable: string
@@ -41,6 +43,7 @@ export const diffRelationRemove = (originalSchema: Schema, newSchema: Schema) =>
 
 			diffs.push({
 				type: 'relation-remove',
+				priority: Priority.RELATION_REMOVE,
 				data: {
 					name: originalRelation.id,
 					fromTable,

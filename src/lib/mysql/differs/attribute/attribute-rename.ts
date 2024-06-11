@@ -1,7 +1,9 @@
 import type { Schema } from '../../../types'
+import { Priority } from '../../utils'
 
 export type AttributeRenameAction = {
 	type: 'attribute-rename'
+	priority: number
 	data: {
 		tableName: string
 		from: string
@@ -27,6 +29,7 @@ export const diffAttributeRename = (originalSchema: Schema, newSchema: Schema) =
 			if (originalAttribute.name !== newAttribute.name) {
 				diffs.push({
 					type: 'attribute-rename',
+					priority: Priority.ATTRIBUTE,
 					data: {
 						tableName: newModel.tableName,
 						from: originalAttribute.name,

@@ -1,25 +1,28 @@
 import { format } from 'sql-formatter'
 import { DiffAction } from '../../types'
-
 import { modelAddQuery } from './model-add'
 import { modelRemoveQuery } from './model-remove'
 import { modelRenameQuery } from './model-rename'
+import { Query, isQuery } from '../../utils'
 
-export const getModelQueries = (actions: DiffAction[]): string[] => {
+export const getModelQueries = (actions: DiffAction[]): Query[] => {
 	return actions
 		.map((action) => {
 			switch (action.type) {
 				case 'model-add':
-					return modelAddQuery(action)
+					return { priority: action.priority, query: modelAddQuery(action) }
 				case 'model-remove':
-					return modelRemoveQuery(action)
+					return { priority: action.priority, query: modelRemoveQuery(action) }
 				case 'model-rename':
-					return modelRenameQuery(action)
+					return { priority: action.priority, query: modelRenameQuery(action) }
 
 				default:
 					return undefined
 			}
 		})
-		.filter((x: any): x is string => x !== undefined)
-		.map((x) => format(x, { language: 'mysql', keywordCase: 'upper' }))
+		.filter(isQuery)
+		.map((x) => ({
+			query: format(x.query, { language: 'mysql', keywordCase: 'upper' }),
+			priority: x.priority,
+		}))
 }

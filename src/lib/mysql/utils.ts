@@ -1,6 +1,21 @@
 import { AttributeType } from '../types'
 import { DiffAction } from './types'
 
+export const Priority = {
+	RELATION_REMOVE: 0,
+	ATTRIBUTE_REMOVE: 1,
+	ATTRIBUTE: 2,
+	MODEL_REMOVE: 3,
+	MODEL: 4,
+	RELATION_ADD: 5,
+} as const
+
+export type Query = {
+	query: string
+	priority: number
+}
+export const isQuery = (x: any): x is Query => x !== undefined && x.query !== undefined && x.priority !== undefined
+
 export const mapAttributeTypeToMySQLType = (type: AttributeType) => {
 	switch (type) {
 		case 'varchar':
