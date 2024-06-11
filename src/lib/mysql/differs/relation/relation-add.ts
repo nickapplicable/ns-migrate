@@ -1,9 +1,7 @@
 import type { Schema } from '../../../types'
-import { Priority } from '../../utils'
 
 export type RelationAddAction = {
 	type: 'relation-add'
-	priority: number
 	data: {
 		name: string
 		fromTable: string
@@ -39,7 +37,6 @@ export const diffRelationAdd = (originalSchema: Schema, newSchema: Schema) => {
 
 			diffs.push({
 				type: 'relation-add',
-				priority: Priority.RELATION_ADD,
 				data: {
 					name: newRelation.id,
 					fromTable,

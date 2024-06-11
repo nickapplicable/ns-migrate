@@ -1,9 +1,7 @@
 import type { Schema } from '../../../types'
-import { Priority } from '../../utils'
 
 export type AttributeRemoveAction = {
 	type: 'attribute-remove'
-	priority: number
 	data: {
 		tableName: string
 		attributeName: string
@@ -25,7 +23,6 @@ export const diffAttributeRemove = (originalSchema: Schema, newSchema: Schema) =
 			if (!newAttribute) {
 				diffs.push({
 					type: 'attribute-remove',
-					priority: Priority.ATTRIBUTE_REMOVE,
 					data: {
 						tableName: newModel.tableName,
 						attributeName: originalAttribute.name,

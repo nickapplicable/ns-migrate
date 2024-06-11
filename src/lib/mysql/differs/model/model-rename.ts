@@ -1,9 +1,7 @@
 import type { Schema } from '../../../types'
-import { Priority } from '../../utils'
 
 export type ModelRenameAction = {
 	type: 'model-rename'
-	priority: number
 	data: {
 		from: string
 		to: string
@@ -23,7 +21,6 @@ export const diffModelRename = (originalSchema: Schema, newSchema: Schema) => {
 			if (originalName !== newName) {
 				diffs.push({
 					type: 'model-rename',
-					priority: Priority.MODEL,
 					data: {
 						from: originalName,
 						to: newName,

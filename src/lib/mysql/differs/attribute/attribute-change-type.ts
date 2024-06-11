@@ -1,9 +1,8 @@
 import type { Schema } from '../../../types'
-import { mapAttributeTypeToMySQLType, Priority } from '../../utils'
+import { mapAttributeTypeToMySQLType } from '../../utils'
 
 export type AttributeChangeTypeAction = {
 	type: 'attribute-change-type'
-	priority: number
 	data: {
 		tableName: string
 		attributeName: string
@@ -42,7 +41,6 @@ export const diffAttributeChangeType = (originalSchema: Schema, newSchema: Schem
 			) {
 				diffs.push({
 					type: 'attribute-change-type',
-					priority: Priority.ATTRIBUTE,
 					data: {
 						tableName: newModel.tableName,
 						attributeName: newAttribute.name,

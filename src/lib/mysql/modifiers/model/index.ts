@@ -3,18 +3,18 @@ import { DiffAction } from '../../types'
 import { modelAddQuery } from './model-add'
 import { modelRemoveQuery } from './model-remove'
 import { modelRenameQuery } from './model-rename'
-import { Query, isQuery } from '../../utils'
+import { Priority, Query, isQuery } from '../../utils'
 
 export const getModelQueries = (actions: DiffAction[]): Query[] => {
 	return actions
-		.map((action) => {
+		.map<Query | undefined>((action) => {
 			switch (action.type) {
-				case 'model-add':
-					return { priority: action.priority, query: modelAddQuery(action) }
 				case 'model-remove':
-					return { priority: action.priority, query: modelRemoveQuery(action) }
+					return { priority: Priority.MODEL_REMOVE, query: modelRemoveQuery(action) }
+				case 'model-add':
+					return { priority: Priority.MODEL, query: modelAddQuery(action) }
 				case 'model-rename':
-					return { priority: action.priority, query: modelRenameQuery(action) }
+					return { priority: Priority.MODEL, query: modelRenameQuery(action) }
 
 				default:
 					return undefined

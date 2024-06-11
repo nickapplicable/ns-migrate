@@ -2,16 +2,16 @@ import { format } from 'sql-formatter'
 import { DiffAction } from '../../types'
 import { relationAddQuery } from './relation-add'
 import { relationRemoveQuery } from './relation-remove'
-import { Query, isQuery } from '../../utils'
+import { Priority, Query, isQuery } from '../../utils'
 
 export const getRelationQueries = (actions: DiffAction[]): Query[] => {
 	return actions
-		.map((action) => {
+		.map<Query | undefined>((action) => {
 			switch (action.type) {
-				case 'relation-add':
-					return { priority: action.priority, query: relationAddQuery(action) }
 				case 'relation-remove':
-					return { priority: action.priority, query: relationRemoveQuery(action) }
+					return { priority: Priority.RELATION_REMOVE, query: relationRemoveQuery(action) }
+				case 'relation-add':
+					return { priority: Priority.RELATION_ADD, query: relationAddQuery(action) }
 
 				default:
 					return undefined

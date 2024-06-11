@@ -14,7 +14,9 @@ export type Query = {
 	query: string
 	priority: number
 }
-export const isQuery = (x: any): x is Query => x !== undefined && x.query !== undefined && x.priority !== undefined
+export const isQuery = (x: any): x is Query => {
+	return typeof x === 'object' && x !== null && 'query' in x && 'priority' in x
+}
 
 export const mapAttributeTypeToMySQLType = (type: AttributeType) => {
 	switch (type) {
