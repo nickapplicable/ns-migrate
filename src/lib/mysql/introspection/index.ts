@@ -26,7 +26,10 @@ export const getSchema = async (query: QueryFn, dbName: string): Promise<Schema>
 
 			const attributes = columns
 				.filter((x) => x.tableName === table.name)
-				.filter((x) => x.name !== 'createdAt' && x.name !== 'updatedAt' && x.name !== 'deletedAt')
+				.filter((x) => {
+					if (x.tableName.startsWith('_')) return true
+					return x.name !== 'createdAt' && x.name !== 'updatedAt' && x.name !== 'deletedAt'
+				})
 				.map((column) => {
 					const _ref_attr = _refs.find(
 						(_ref) =>
