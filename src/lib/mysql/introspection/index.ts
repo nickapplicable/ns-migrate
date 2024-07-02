@@ -30,7 +30,7 @@ export const getSchema = async (query: QueryFn, dbName: string): Promise<Schema>
 					if (x.tableName.startsWith('_')) return true
 					return x.name !== 'createdAt' && x.name !== 'updatedAt' && x.name !== 'deletedAt'
 				})
-				.map((column) => {
+				.map((column, index) => {
 					const _ref_attr = _refs.find(
 						(_ref) =>
 							(_ref.type === 'a' || _ref.type === 'r') &&
@@ -44,6 +44,7 @@ export const getSchema = async (query: QueryFn, dbName: string): Promise<Schema>
 						id: _ref_attr?.id || null,
 						name: column.name,
 						type,
+						order: index,
 						default:
 							defaults.find((x) => x.tableName === table.name && x.columnName === column.name)
 								?.defaultValue || null,

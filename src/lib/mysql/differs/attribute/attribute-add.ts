@@ -5,6 +5,7 @@ export type AttributeAddAction = {
 	data: {
 		tableName: string
 		attribute: Attribute
+		prevAttribute: Attribute | undefined
 	}
 }
 
@@ -17,8 +18,11 @@ export const diffAttributeAdd = (originalSchema: Schema, newSchema: Schema) => {
 		// if the model is new, then the whole thing will be new, no need to add a single attr
 		if (!originalModel) continue
 
-		for (const newAttribute of newModel.attributes) {
+		for (let i = 0; i < newModel.attributes.length; i++) {
+			const newAttribute = newModel.attributes[i]!
 			const originalAttribute = originalModel.attributes.find((attribute) => attribute.id === newAttribute.id)
+
+			const prevAttr = newModel.attributes[i - 1]
 
 			if (!originalAttribute) {
 				diffs.push({
@@ -26,6 +30,7 @@ export const diffAttributeAdd = (originalSchema: Schema, newSchema: Schema) => {
 					data: {
 						tableName: newModel.tableName,
 						attribute: newAttribute,
+						prevAttribute: prevAttr,
 					},
 				})
 			}

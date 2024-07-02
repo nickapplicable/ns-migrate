@@ -3,6 +3,7 @@ import { DiffAction } from '../../types'
 import { modelAddQuery } from './model-add'
 import { modelRemoveQuery } from './model-remove'
 import { modelRenameQuery } from './model-rename'
+import { modelReorderQuery } from './model-reorder'
 import { Priority, Query, isQuery } from '../../utils'
 
 export const getModelQueries = (actions: DiffAction[]): Query[] => {
@@ -15,6 +16,8 @@ export const getModelQueries = (actions: DiffAction[]): Query[] => {
 					return { priority: Priority.MODEL, query: modelAddQuery(action) }
 				case 'model-rename':
 					return { priority: Priority.MODEL, query: modelRenameQuery(action) }
+				case 'model-reorder':
+					return { priority: Priority.MODEL, query: modelReorderQuery(action) }
 
 				default:
 					return undefined

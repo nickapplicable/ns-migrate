@@ -40,7 +40,7 @@ export type Attribute = {
 	type: AttributeType
 	default?: string | null
 	selectable?: boolean
-	order?: number
+	order: number
 	nullable: boolean
 	modelId?: string
 }
